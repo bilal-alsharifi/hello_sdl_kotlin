@@ -7,10 +7,10 @@ import com.smartdevicelink.transport.enums.TransportType
  */
 class Config {
     companion object {
-        val TRANSPORT_TYPE = TransportType.MULTIPLEX
+        val TRANSPORT_TYPE = TransportType.TCP
         const val APP_NAME = "Hello Sdl Kotlin"
         const val APP_ID = "123876235"
-        const val CORE_IP = "192.168.1.123"
-        const val CORE_PORT = 12345
+        const val CORE_IP = "m.sdl.tools"
+        const val CORE_PORT = 18161
     }
 }
