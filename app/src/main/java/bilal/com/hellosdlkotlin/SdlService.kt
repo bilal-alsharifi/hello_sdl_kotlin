@@ -6,8 +6,11 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.hardware.usb.UsbAccessory
+import android.hardware.usb.UsbManager
 import android.os.Build
 import android.os.IBinder
+import android.os.Parcelable
 import com.smartdevicelink.managers.SdlManager
 import com.smartdevicelink.managers.SdlManagerListener
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork
@@ -18,7 +21,8 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType
 import com.smartdevicelink.proxy.rpc.enums.FileType
 import com.smartdevicelink.proxy.rpc.enums.HMILevel
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener
-import com.smartdevicelink.transport.TCPTransportConfig
+import com.smartdevicelink.transport.*
+import com.smartdevicelink.transport.enums.TransportType
 import java.util.*
 
 
@@ -43,14 +47,9 @@ class SdlService : Service() {
             enterForeground()
         }
 
+
         if(sdlManager == null){
-            val transportConfig : TCPTransportConfig = TCPTransportConfig(Config.CORE_PORT, Config.CORE_IP, false)
-
-            // The app type to be used
-            val appType : Vector <AppHMIType> = Vector()
-            appType.add(AppHMIType.MEDIA)
-
-            // The manager listener helps you know when certain events that pertain to the SDL Manager happen
+            // Create SDlManagerListener
             val listener = object : SdlManagerListener {
 
                 override fun onStart() {
@@ -78,14 +77,33 @@ class SdlService : Service() {
                 }
             }
 
-            // Create App Icon, this is set in the SdlManager builder
-            val appIconArtwork = SdlArtwork("icon", FileType.GRAPHIC_PNG, R.drawable.ic_launcher, false)
 
-            // The manager builder sets options for your session
+            // Create sdlManager
             val builder = SdlManager.Builder(this, Config.APP_ID, Config.APP_NAME, listener)
+
+            // Set transport config
+            var transportConfig: BaseTransportConfig? = null
+            when (Config.TRANSPORT_TYPE) {
+                TransportType.TCP -> transportConfig = TCPTransportConfig(Config.CORE_PORT, Config.CORE_IP, false)
+                TransportType.MULTIPLEX -> transportConfig = MultiplexTransportConfig(baseContext, Config.APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED)
+                TransportType.BLUETOOTH -> transportConfig = BTTransportConfig()
+                TransportType.USB -> transportConfig = USBTransportConfig(baseContext, intent?.getParcelableExtra<Parcelable>(UsbManager.EXTRA_ACCESSORY) as UsbAccessory, false, false)
+            }
+            builder.setTransportType(transportConfig!!)
+
+
+            // // Set App HMI Types
+            val appType : Vector <AppHMIType> = Vector()
+            appType.add(AppHMIType.MEDIA)
             builder.setAppTypes(appType)
-            builder.setTransportType(transportConfig)
+
+
+            // Set app icon
+            val appIconArtwork = SdlArtwork("icon", FileType.GRAPHIC_PNG, R.drawable.ic_launcher, false)
             builder.setAppIcon(appIconArtwork)
+
+
+            // Build SdlManager
             sdlManager = builder.build()
             sdlManager?.start()
         }
