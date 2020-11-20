@@ -1,7 +1,7 @@
 package bilal.com.hellosdlkotlin
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.smartdevicelink.transport.SdlBroadcastReceiver
 import com.smartdevicelink.transport.enums.TransportType

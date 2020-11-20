@@ -78,10 +78,6 @@ class SdlService : Service() {
 
                 }
 
-                override fun managerShouldUpdateLifecycle(language: Language?): LifecycleConfigurationUpdate {
-                    return LifecycleConfigurationUpdate()
-                }
-
                 override fun managerShouldUpdateLifecycle(language: Language?, hmiLanguage: Language?): LifecycleConfigurationUpdate {
                     return LifecycleConfigurationUpdate()
                 }
@@ -96,8 +92,6 @@ class SdlService : Service() {
             when (Config.TRANSPORT_TYPE) {
                 TransportType.TCP -> transportConfig = TCPTransportConfig(Config.CORE_PORT, Config.CORE_IP, false)
                 TransportType.MULTIPLEX -> transportConfig = MultiplexTransportConfig(baseContext, Config.APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED)
-                TransportType.BLUETOOTH -> transportConfig = BTTransportConfig()
-                TransportType.USB -> transportConfig = USBTransportConfig(baseContext, intent?.getParcelableExtra<Parcelable>(UsbManager.EXTRA_ACCESSORY) as UsbAccessory, false, false)
             }
             builder.setTransportType(transportConfig!!)
 
