@@ -14,12 +14,14 @@ import android.os.Parcelable
 import com.smartdevicelink.managers.SdlManager
 import com.smartdevicelink.managers.SdlManagerListener
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate
 import com.smartdevicelink.protocol.enums.FunctionID
 import com.smartdevicelink.proxy.RPCNotification
 import com.smartdevicelink.proxy.rpc.OnHMIStatus
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType
 import com.smartdevicelink.proxy.rpc.enums.FileType
 import com.smartdevicelink.proxy.rpc.enums.HMILevel
+import com.smartdevicelink.proxy.rpc.enums.Language
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener
 import com.smartdevicelink.transport.*
 import com.smartdevicelink.transport.enums.TransportType
@@ -74,6 +76,14 @@ class SdlService : Service() {
                 override fun onError(info: String, e: Exception)
                 {
 
+                }
+
+                override fun managerShouldUpdateLifecycle(language: Language?): LifecycleConfigurationUpdate {
+                    return LifecycleConfigurationUpdate()
+                }
+
+                override fun managerShouldUpdateLifecycle(language: Language?, hmiLanguage: Language?): LifecycleConfigurationUpdate {
+                    return LifecycleConfigurationUpdate()
                 }
             }
 

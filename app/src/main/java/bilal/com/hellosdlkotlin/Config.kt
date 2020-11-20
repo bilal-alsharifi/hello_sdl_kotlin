@@ -11,6 +11,6 @@ class Config {
         const val APP_NAME = "Hello Sdl Kotlin"
         const val APP_ID = "123876235"
         const val CORE_IP = "m.sdl.tools"
-        const val CORE_PORT = 18161
+        const val CORE_PORT = 13585
     }
 }
